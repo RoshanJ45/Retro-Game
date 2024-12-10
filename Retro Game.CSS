@@ -1,0 +1,9 @@
+        body {
+            background-color: #000;
+            font-family: Arial, sans-serif;
+        }
+        #gameCanvas {
+            border: 1px solid #fff;
+            background-color: #000;
+        }
+    

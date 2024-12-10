@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Invaders</title>
+    <style>
+        body {
+            background-color: #000;
+            font-family: Arial, sans-serif;
+        }
+        #gameCanvas {
+            border: 1px solid #fff;
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <script>
+        
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = 400;
+        canvas.height = 600;
+
+        let spaceshipX = canvas.width / 2;
+        let spaceshipY = canvas.height - 50;
+        let alienX = canvas.width / 2;
+        let alienY = 50;
+        let alienSpeed = 2;
+        let laserX = spaceshipX;
+        let laserY = spaceshipY;
+        let laserSpeed = 5;
+        let score = 0;
+
+        function drawSpaceship() {
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(spaceshipX, spaceshipY, 50, 20);
+        }
+
+        function drawAlien() {
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(alienX, alienY, 50, 20);
+        }
+
+        function drawLaser() {
+            ctx.fillStyle = '#0f0';
+            ctx.fillRect(laserX, laserY, 10, 20);
+        }
+
+        function update() {
+            // Move the alien
+            alienX += alienSpeed;
+            if (alienX + 50 > canvas.width || alienX < 0) {
+                alienSpeed = -alienSpeed;
+            }
+
+            laserY -= laserSpeed;
+            if (laserY < 0) {
+                laserY = spaceshipY;
+                laserX = spaceshipX;
+            }
+
+            if (laserX + 10 > alienX && laserX < alienX + 50 && laserY + 20 > alienY && laserY < alienY + 20) {
+                score++;
+                alienX = canvas.width / 2;
+                alienY = 50;
+                laserY = spaceshipY;
+                laserX = spaceshipX;
+            }
+
+            if (alienY + 20 > canvas.height) {
+                alert('Game Over! Your score is ' + score);
+                score = 0;
+                alienX = canvas.width / 2;
+                alienY = 50;
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawSpaceship();
+            drawAlien();
+            drawLaser();
+            ctx.font = '24px Arial';
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText('Score: ' + score, 10, 10);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                spaceshipX -= 10;
+                if (spaceshipX < 0) {
+                    spaceshipX = 0;
+                }
+            } else if (e.key === 'ArrowRight') {
+                spaceshipX += 10;
+                if (spaceshipX + 50 > canvas.width) {
+                    spaceshipX = canvas.width - 50;
+                }
+            } else if (e.key === ' ') {
+                laserY = spaceshipY;
+                laserX = spaceshipX;
+            }
+        });
+
+        setInterval(() => {
+            update();
+            draw();
+        }, 16);
+    </script>
+</body>
+</html>
